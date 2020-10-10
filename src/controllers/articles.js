@@ -37,7 +37,7 @@ export const upvote = async function (req, res, next) {
     const article = await Article.findOneAndUpdate(
       { slug: req.params.slug },
       { $inc: { upvotes: 1 } },
-      { new: true },
+      { new: true }
     )
     if (!article) {
       const error = new Error('Article not found')
@@ -59,16 +59,21 @@ export const destroy = async function (req, res, next) {
 }
 export const comment = async function (req, res, next) {
   try {
-    const article = await Article.findOne({ slug: req.params.slug })
+    const article = await Article.findOneAndUpdate(
+      { slug: req.params.slug },
+      {
+        $push: {
+          comments: { username: req.body.username, text: req.body.text },
+        },
+      },
+      { new: true }
+    )
     if (!article) {
       const error = new Error('Article not found')
       error.status = 404
       throw error
     }
-    const comment = await article.update({
-      $push: { comments: { username: req.body.username, text: req.body.text } },
-    })
-    res.status(201).json(comment)
+    res.status(201).json(article)
   } catch (error) {
     next(error)
   }

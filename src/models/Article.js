@@ -7,14 +7,14 @@ const articleSchema = new Schema(
     slug: { type: String, unique: true, trim: true },
     title: { type: String, required: [true, 'Title is required'], trim: true },
     content: {
-      type: String,
+      type: [String],
       required: [true, 'Content is required'],
       trim: true,
     },
     upvotes: { type: Number, default: 0 },
     comments: { type: [commentSchema] },
   },
-  { timestamps: true },
+  { timestamps: true }
 )
 
 const commentSchema = new Schema({

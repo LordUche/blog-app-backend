@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -14,20 +15,25 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => console.log('Database connected ✨'))
   .catch((e) => console.log('💥', e.message))
 
 const app = express()
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use(helmet())
 app.use(compression())
 app.use(mongoSanitize())
 app.use(xss())
 app.use(morgan('dev'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 app.use('/api/articles', articlesRouter)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 app.all('*', (req, res, next) => {
   const error = new Error('Route not found!')
   error.status = 404
