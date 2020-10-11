@@ -21,7 +21,7 @@ mongoose
   .catch((e) => console.log('💥', e.message))
 
 const app = express()
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '../public')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
@@ -32,7 +32,7 @@ app.use(xss())
 app.use(morgan('dev'))
 app.use('/api/articles', articlesRouter)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+  res.sendFile(path.join(__dirname, '../public', 'index.html'))
 })
 app.all('*', (req, res, next) => {
   const error = new Error('Route not found!')
